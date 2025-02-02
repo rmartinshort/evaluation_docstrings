@@ -11,10 +11,12 @@ def generate_basic_analysis_cost_latency(data, model_type):
     axes[0, 0].set_xlabel("Total Cost ($)")
     axes[0, 0].set_ylabel("Frequency")
 
-    # Plot 2: Scatter plot of process_time vs total_cost
-    sns.scatterplot(data=data, x="process_time", y="total_cost", ax=axes[0, 1])
-    axes[0, 1].set_title("Process Time vs Total Cost")
-    axes[0, 1].set_xlabel("Process Time (s)")
+    # Plot 2: Scatter plot of input tokens vs total_cost
+    sns.scatterplot(data=data, x="input_tokens", y="total_cost", ax=axes[0, 1], label="Input")
+    sns.scatterplot(data=data, x="output_tokens", y="total_cost", ax=axes[0, 1], label="Output")
+    axes[0, 1].legend()
+    axes[0, 1].set_title("Tokens vs Total Cost")
+    axes[0, 1].set_xlabel("Tokens")
     axes[0, 1].set_ylabel("Total Cost ($)")
 
     # Plot 3: Histogram of process_time
@@ -23,17 +25,17 @@ def generate_basic_analysis_cost_latency(data, model_type):
     axes[1, 0].set_xlabel("Process Time (s)")
     axes[1, 0].set_ylabel("Frequency")
 
-    # Plot 3: Histogram of process_time
-    sns.scatterplot(data=data, x="output_tokens", y="total_cost", ax=axes[1, 1])
-    axes[1, 1].set_title("Output tokens vs Total Cost")
-    axes[1, 1].set_xlabel("Output Tokens")
-    axes[1, 1].set_ylabel("Total Cost")
+    # Plot 4: Scatter plot of output tokens vs total cost
+    sns.scatterplot(data=data, x="input_tokens", y="process_time", ax=axes[1, 1], label="Input")
+    sns.scatterplot(data=data, x="output_tokens", y="process_time", ax=axes[1, 1], label="Output")
+    axes[1, 1].legend()
+    axes[1, 1].set_title("Tokens vs Process time")
+    axes[1, 1].set_xlabel("Tokens")
+    axes[1, 1].set_ylabel("Process Time (s)")
 
     # Add an overall title for the figure
     fig.suptitle(f"Analysis of Total Cost and Process Time ({model_type})", fontsize=16)
 
     # Adjust layout for better spacing
     plt.tight_layout(rect=[0, 0, 1, 0.95])  # Leave space for the overall title
-
-    # Show the plots
-    plt.show()
+    return fig

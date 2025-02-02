@@ -26,7 +26,7 @@ class DocStringEvaluationPrompt:
     - Not every function or class in the code needs a docstring. If you see one without a docstring, think carefully about whether adding one would actually 
     enhance the code before you make your coverage judgement.
     - If the code uses a standard algorithm like BFS, binary search, prefix sum etc, the docstring should mention this but does not need to give a detailed explanation.
-    - If you see a class with a docstring that you think is unnecessay, be lenient - its better to be too verbose than miss a docstring and risk confusion 
+    - If you see a class with a docstring that you think is unnecessary, be lenient - its better to be too verbose than miss a docstring and risk confusion 
     - CRITICAL: Only evaluate the docstrings, not other parts of the code. If there are logical flaws, missing import statements or missing comments it is not your job to judge those. Focus only on the docstring content.
 
     Also return a brief (<50 word) explanation for your choice. If you choose False for any of the criteria above, focus on why the docstrings failed and how they could be

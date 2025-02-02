@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typng import Optional, List
+from typing import Optional, List
 from pydantic import BaseModel, Field
 
 class DocString(BaseModel):
