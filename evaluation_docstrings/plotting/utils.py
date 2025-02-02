@@ -1,19 +1,24 @@
 import seaborn as sns
 import matplotlib.pyplot as plt
 
+
 def generate_basic_analysis_cost_latency(data, model_type):
     # Create a figure with 3 subplots arranged in a grid (2 rows, 2 columns)
     fig, axes = plt.subplots(2, 2, figsize=(12, 10))  # Adjust figure size as needed
 
     # Plot 1: Histogram of total_cost
     sns.histplot(data=data, x="total_cost", hue="code_type", ax=axes[0, 0])
-    axes[0, 0].set_title("Histogram of Total Cost by Code Type")
+    axes[0, 0].set_title("Histogram of Total Cost by Code Type, Overall mean /1000 calls: ${:.3f}".format(1000*data["total_cost"].mean()))
     axes[0, 0].set_xlabel("Total Cost ($)")
     axes[0, 0].set_ylabel("Frequency")
 
     # Plot 2: Scatter plot of input tokens vs total_cost
-    sns.scatterplot(data=data, x="input_tokens", y="total_cost", ax=axes[0, 1], label="Input")
-    sns.scatterplot(data=data, x="output_tokens", y="total_cost", ax=axes[0, 1], label="Output")
+    sns.scatterplot(
+        data=data, x="input_tokens", y="total_cost", ax=axes[0, 1], label="Input"
+    )
+    sns.scatterplot(
+        data=data, x="output_tokens", y="total_cost", ax=axes[0, 1], label="Output"
+    )
     axes[0, 1].legend()
     axes[0, 1].set_title("Tokens vs Total Cost")
     axes[0, 1].set_xlabel("Tokens")
@@ -21,13 +26,17 @@ def generate_basic_analysis_cost_latency(data, model_type):
 
     # Plot 3: Histogram of process_time
     sns.histplot(data=data, x="process_time", hue="code_type", ax=axes[1, 0])
-    axes[1, 0].set_title("Histogram of Process Time by Code Type")
+    axes[1, 0].set_title("Histogram of Process Time by Code Type. Overall mean: {:.3f}s".format(data["process_time"].mean()))
     axes[1, 0].set_xlabel("Process Time (s)")
     axes[1, 0].set_ylabel("Frequency")
 
     # Plot 4: Scatter plot of output tokens vs total cost
-    sns.scatterplot(data=data, x="input_tokens", y="process_time", ax=axes[1, 1], label="Input")
-    sns.scatterplot(data=data, x="output_tokens", y="process_time", ax=axes[1, 1], label="Output")
+    sns.scatterplot(
+        data=data, x="input_tokens", y="process_time", ax=axes[1, 1], label="Input"
+    )
+    sns.scatterplot(
+        data=data, x="output_tokens", y="process_time", ax=axes[1, 1], label="Output"
+    )
     axes[1, 1].legend()
     axes[1, 1].set_title("Tokens vs Process time")
     axes[1, 1].set_xlabel("Tokens")

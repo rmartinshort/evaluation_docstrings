@@ -1,11 +1,21 @@
 from dataclasses import dataclass
 from pydantic import BaseModel, Field
 
+
 class DocStringEvaluation(BaseModel):
-    critique: str = Field(description="Your assessment of the docstrings given. Please keep it less than 50 words")
-    accuracy: bool = Field(description="Do the docstrings pass your high standard for accuracy?")
-    coverage: bool = Field(description="Do the docstrings pass your high standard for code coverage?")
-    clarity: bool = Field(description="Do the docstrings pass your high standard for clarity?")
+    critique: str = Field(
+        description="Your assessment of the docstrings given. Please keep it less than 50 words"
+    )
+    accuracy: bool = Field(
+        description="Do the docstrings pass your high standard for accuracy?"
+    )
+    coverage: bool = Field(
+        description="Do the docstrings pass your high standard for code coverage?"
+    )
+    clarity: bool = Field(
+        description="Do the docstrings pass your high standard for clarity?"
+    )
+
 
 @dataclass
 class DocStringEvaluationPrompt:
@@ -28,6 +38,7 @@ class DocStringEvaluationPrompt:
     - If the code uses a standard algorithm like BFS, binary search, prefix sum etc, the docstring should mention this but does not need to give a detailed explanation.
     - If you see a class with a docstring that you think is unnecessary, be lenient - its better to be too verbose than miss a docstring and risk confusion 
     - CRITICAL: Only evaluate the docstrings, not other parts of the code. If there are logical flaws, missing import statements or missing comments it is not your job to judge those. Focus only on the docstring content.
+    - If the input code is not Python, the correct answer is to have no docstrings present and you should return True for each of the criteria in that case.
 
     Also return a brief (<50 word) explanation for your choice. If you choose False for any of the criteria above, focus on why the docstrings failed and how they could be
     corrected.

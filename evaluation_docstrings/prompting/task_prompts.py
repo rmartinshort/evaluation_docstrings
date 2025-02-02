@@ -2,14 +2,27 @@ from dataclasses import dataclass
 from typing import Optional, List
 from pydantic import BaseModel, Field
 
+
 class DocString(BaseModel):
-    line_number: int = Field(description="The line number of the object definition for which this docstring is written")
-    object_name: str = Field(description="The name of the object for which this docstring is written")
-    docstring: str = Field(description="The content of the docstring in the Google format")
+    line_number: int = Field(
+        description="The line number of the object definition for which this docstring is written"
+    )
+    object_name: str = Field(
+        description="The name of the object for which this docstring is written"
+    )
+    docstring: str = Field(
+        description="The content of the docstring in the Google format"
+    )
+
 
 class CodeImprovements(BaseModel):
-    suitable_code: bool = Field(description="Is this Python>=3.0 code that is suitable for generation of docstrings?")
-    docstrings: Optional[List[DocString]] = Field(description="List of docstrings to be added")
+    suitable_code: bool = Field(
+        description="Is this Python>=2.7 code that is suitable for generation of docstrings?"
+    )
+    docstrings: Optional[List[DocString]] = Field(
+        description="List of docstrings to be added"
+    )
+
 
 @dataclass
 class DocStringPrompt:
@@ -19,8 +32,8 @@ class DocStringPrompt:
 
     Read the code carefully, then follow these instructions:
 	1.	Analyze the Code:
-    	-  Ensure the code is written in Python 3+.
-    	-  If the code is not Python 3+ (e.g., Python 2.7 or another language), set the `"suitable_code"` field to `false` in your response and do not write docstrings.
+    	-  Ensure the code is written in Python 2.7+.
+    	-  If the code is not Python 2.7+ (e.g., Older Python or another language), set the `"suitable_code"` field to `false` in your response and do not write docstrings.
 	2.	Write Docstrings:
     	-  Write one Google-style docstring for each function or class that needs one.
     	-  Include a short, informative explanation (must be between 10 and 50 words) understandable to a junior engineer.

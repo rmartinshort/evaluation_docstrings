@@ -2,6 +2,7 @@ import os
 from typing import Dict
 from dotenv import load_dotenv
 
+
 def load_secrets(env_path: str = ".env") -> Dict[str, str]:
     """
     Load API keys from the specified environment file.
@@ -20,4 +21,8 @@ def load_secrets(env_path: str = ".env") -> Dict[str, str]:
 
     load_dotenv(dotenv_path=env_path)
 
-    return {"OPENAI_API_KEY": os.getenv("OPENAI_API_KEY"), "GEMINI_API_KEY": os.getenv("GEMINI_API_KEY"), "ANTHROPIC_API_KEY": os.getenv("ANTHROPIC_API_KEY")}
+    return {
+        "OPENAI_API_KEY": os.getenv("OPENAI_API_KEY"),
+        "GEMINI_API_KEY": os.getenv("GEMINI_API_KEY"),
+        "ANTHROPIC_API_KEY": os.getenv("ANTHROPIC_API_KEY"),
+    }
