@@ -1,6 +1,15 @@
 class ProgrammaticEvals:
     @staticmethod
-    def check_correct_fields(docstrings_dict):
+    def check_correct_fields(docstrings_dict: dict) -> bool:
+        """
+        Checks if the input dictionary has the correct fields.
+
+        Args:
+            docstrings_dict (dict): A dictionary containing docstrings information.
+
+        Returns:
+            bool: True if the dictionary has the correct fields and structure, False otherwise.
+        """
         keys = set(list(docstrings_dict.keys()))
         if "summary" in keys:
             keys.remove("summary")
@@ -24,7 +33,20 @@ class ProgrammaticEvals:
         return True
 
     @staticmethod
-    def check_explanation_word_count(docstrings_dict, min_words=10, max_words=50):
+    def check_explanation_word_count(
+        docstrings_dict: dict, min_words: int = 10, max_words: int = 50
+    ) -> bool:
+        """
+        Checks if the word count of the explanation in each docstring falls within the specified range.
+
+        Args:
+            docstrings_dict (dict): A dictionary containing docstrings information.
+            min_words (int, optional): The minimum number of words allowed. Defaults to 10.
+            max_words (int, optional): The maximum number of words allowed. Defaults to 50.
+
+        Returns:
+            bool: True if the word count is within the range for all docstrings or if the code is not suitable, False otherwise.
+        """
         if not docstrings_dict["suitable_code"]:
             return True
 
@@ -36,7 +58,17 @@ class ProgrammaticEvals:
         return True
 
     @staticmethod
-    def check_line_numbers_and_methods(docstrings_dict, input_code):
+    def check_line_numbers_and_methods(docstrings_dict: dict, input_code: str) -> bool:
+        """
+        Checks if the line numbers and object names in the docstrings match the input code.
+
+        Args:
+            docstrings_dict (dict): A dictionary containing docstrings information.
+            input_code (str): The input code as a string.
+
+        Returns:
+            bool: True if the line numbers and object names match for all docstrings or if the code is not suitable, False otherwise.
+        """
         if not docstrings_dict["suitable_code"]:
             return True
 

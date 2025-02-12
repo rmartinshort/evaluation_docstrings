@@ -1,17 +1,8 @@
 import seaborn as sns
 import pandas as pd
 import matplotlib.pyplot as plt
-from collections import defaultdict
-from sklearn.metrics import cohen_kappa_score
+from evaluation_docstrings.task.utils import assemble_cohen_kappa
 from evaluation_docstrings.llm.config import costs
-
-
-def assemble_cohen_kappa(df, scores_columns):
-    result = defaultdict(str)
-    for k, v in scores_columns.items():
-        result[k] = cohen_kappa_score(df[k], df[v])
-
-    return result
 
 
 def generate_cohen_kappa_plot(evaluation_result_df, model_name):
@@ -68,7 +59,9 @@ def generate_basic_analysis_cost_latency(data, model_name):
     axes[1, 0].set_ylabel("Frequency")
 
     # Plot 4: Scatter plot of output tokens vs total cost
-    data.plot.scatter(y="total_cost", x="process_time", c="fraction_cost_input", ax=axes[1, 1])
+    data.plot.scatter(
+        y="total_cost", x="process_time", c="fraction_cost_input", ax=axes[1, 1]
+    )
     axes[1, 1].legend()
     axes[1, 1].set_title("Process time vs. Total Cost")
     axes[1, 1].set_xlabel("Process time (s)")
@@ -81,16 +74,19 @@ def generate_basic_analysis_cost_latency(data, model_name):
     plt.tight_layout(rect=[0, 0, 1, 0.95])  # Leave space for the overall title
     return fig
 
-def assemble_scores_barplot(scores_df, id_cols):
 
+def generate_scores_barplot_dataset(scores_df, id_cols):
     melted_df = scores_df.melt(
         id_vars=id_cols,
         value_name="score",
         value_vars=[c for c in scores_df if c not in id_cols],
-        var_name="score_type"
+        var_name="score_type",
     )
-    totals = melted_df.groupby(
-        ["score_type","code_type"]
-    ).agg({"score":"sum","code_name":"count"}).reset_index().rename(columns={"code_name":"total"})
-    totals["fraction"] = totals["score"]/totals["total"]
+    totals = (
+        melted_df.groupby(["score_type", "code_type"])
+        .agg({"score": "sum", "code_name": "count"})
+        .reset_index()
+        .rename(columns={"code_name": "total"})
+    )
+    totals["fraction"] = totals["score"] / totals["total"]
     return totals

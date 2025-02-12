@@ -1,0 +1,1695 @@
+code_id,code_path,code_type,input_code,docstrings,critique,fields_correct,word_count_correct,line_numbers_correct,accuracy_score,coverage_score,clarity_score,process_time,input_tokens,output_tokens,code_name
+0,../code_database/testing/leetcode/can_permute_palindrome.py,leetcode,"
+        <input_code>
+        1 from collections import defaultdict
+2 
+3 class Solution(object):
+4     def canPermutePalindrome(self, s):
+5 
+6         len_s = len(s)
+7 
+8         if len_s == 1:
+9             return True
+10 
+11         H = defaultdict(int)
+12 
+13         for i in range(len_s):
+14             H[s[i]] += 1
+15 
+16         even_letters = 0
+17         for k,v in H.items():
+18             if v%2 == 0:
+19                 even_letters += 1
+20 
+21         if even_letters >= len(H) - 1:
+22             return True
+23         else:
+24             return False
+
+        <input_code>
+        ","--------------------
+Line number: 4
+Object name: canPermutePalindrome
+
+Docstring:
+
+Checks if a given string can be rearranged to form a palindrome.  It counts the frequency of each character. If the number of characters with odd counts is at most 1, the string can be permuted to form a palindrome. 
+
+Args:
+    s (str): The input string.
+
+Returns:
+    bool: True if the string can be rearranged to form a palindrome, False otherwise.
+",The docstring accurately describes the algorithm's logic and purpose. It correctly specifies input/output types and has good coverage of the function's behavior. The explanation is clear and concise.,True,True,True,1,1,1,3.5236048698425293,2643,120,can_permute_palindrome.py
+1,../code_database/testing/leetcode/shortest_form_string.py,leetcode,"
+        <input_code>
+        1 class Solution:
+2     def shortestWay(self, source, target):
+3 
+4         i = 0
+5         answer = 0
+6         while i < len(target):
+7             can_form = False
+8 
+9             # for every char in target, see if its in source
+10             for ch in source:
+11                 # Can form a minimum subsequence of target
+12                 if ch == target[i]:
+13                     can_form = True
+14                     i += 1
+15                     if i == len(target):
+16                         return answer + 1
+17 
+18             if can_form:
+19                 answer += 1
+20             # Couldn't form a subsequence, return early.
+21             else:
+22                 return -1
+
+        <input_code>
+        ","--------------------
+Line number: 2
+Object name: shortestWay
+
+Docstring:
+
+Finds the shortest way to form the target string from the source string. 
+
+The function iterates through the target string and checks if each character can be found in the source string. If a character is found, it increments the counter and moves to the next character in the target string. If a character is not found, it returns -1. Otherwise, it returns the number of subsequences needed to form the target string.
+
+Args:
+    source (str): The source string.
+    target (str): The target string.
+
+Returns:
+    int: The shortest way to form the target string from the source string, or -1 if it's impossible.
+","The docstring is accurate but could be clearer about what ""shortest way"" means - it should explain that it's finding the minimum number of subsequences needed. Otherwise good coverage and accuracy.",True,True,True,1,1,0,3.480379819869995,2688,121,shortest_form_string.py
+2,../code_database/testing/leetcode/palindrome_number.py,leetcode,"
+        <input_code>
+        1 class Solution:
+2     def isPalindrome(self, x):
+3 
+4         str_x = str(x)
+5         p0 = 0
+6         p1 = len(str_x)-1
+7 
+8         while p0 < p1:
+9             if str_x[p0] != str_x[p1]:
+10                 return False
+11             p0 += 1
+12             p1 -= 1
+13 
+14         return True
+
+        <input_code>
+        ","--------------------
+Line number: 2
+Object name: isPalindrome
+
+Docstring:
+
+Checks if the integer x is a palindrome.  The function converts the integer to a string, then uses two pointers to compare characters from the beginning and end, moving towards the middle. It returns True if the integer is a palindrome, and False otherwise.
+
+Args:
+    x (int): The integer to check.
+
+Returns:
+    bool: True if x is a palindrome, False otherwise.
+","The docstring accurately describes the two-pointer approach, includes correct args/returns, and provides sufficient detail for understanding. The Solution class doesn't need a docstring.",True,True,True,1,1,1,3.4808828830718994,2567,116,palindrome_number.py
+3,../code_database/testing/leetcode/campus_bikes.py,leetcode,"
+        <input_code>
+        1 import heapq
+2 
+3 class Solution(object):
+4     def assignBikes(self, workers, bikes):
+5 
+6         bike_distances = []
+7         heap = []
+8         for i, worker in enumerate(workers):
+9             curr_worker_pairs = []
+10             for j, bike in enumerate(bikes):
+11                 # get all the pairs i->j and j->i
+12                 curr_worker_pairs.append((self.distance(worker,bike),i,j))
+13 
+14             # sort so that we can pop this to get the closest distance
+15             curr_worker_pairs.sort(reverse=True)
+16             # add closest bike to this worker to the heap
+17             heapq.heappush(heap,curr_worker_pairs.pop())
+18             # store remaining options for this worker in a list
+19             bike_distances.append(curr_worker_pairs)
+20 
+21         # keep track of which worker is assigned to bikes
+22         bike_status = [False]*len(bikes)
+23         # keep track of which bike is assigned to each worker
+24         worker_status = [None]*len(workers)
+25 
+26         while heap:
+27             # get shortest distance
+28             distince, worker, bike = heapq.heappop(heap)
+29 
+30             # if that bike is not taken, take it
+31             if not bike_status[bike]:
+32                 bike_status[bike] = True
+33                 worker_status[worker] = bike
+34             # get the next closest bike
+35             else:
+36                 next_closest_bike = bike_distances[worker].pop()
+37                 heapq.heappush(heap,next_closest_bike)
+38 
+39         return worker_status
+40 
+41         print(bike_distances)
+42 
+43         res = []
+44         while bike_distances:
+45             res.append(heapq.heappop(bike_distances)[1:])
+46         return res
+47 
+48     @staticmethod
+49     def distance(worker,bike):
+50 
+51         return abs(worker[0]-bike[0]) + abs(worker[1]-bike[1])
+
+        <input_code>
+        ","--------------------
+Line number: 4
+Object name: assignBikes
+
+Docstring:
+
+Assigns bikes to workers to minimize the total distance traveled.  The function uses a min-heap to efficiently find the closest bike for each worker, iteratively assigning bikes and handling conflicts. It returns a list indicating which bike is assigned to each worker.
+
+Args:
+    workers (List[List[int]]): A list of worker coordinates, each represented as [x, y].
+    bikes (List[List[int]]): A list of bike coordinates, each represented as [x, y].
+
+Returns:
+    List[int]: A list where the i-th element represents the index of the bike assigned to worker i.
+--------------------
+Line number: 49
+Object name: distance
+
+Docstring:
+
+Calculates the Manhattan distance between two points.
+
+Args:
+    worker (List[int]): Coordinates of the worker [x, y].
+    bike (List[int]): Coordinates of the bike [x, y].
+
+Returns:
+    int: The Manhattan distance between the worker and the bike.
+",The docstrings are accurate and clear but there's a significant issue with the code coverage. The Solution class itself should have a docstring explaining the bike assignment optimization problem.,True,False,True,1,0,1,3.1290857791900635,3108,117,campus_bikes.py
+4,../code_database/testing/leetcode/pow.py,leetcode,"
+        <input_code>
+        1 class Solution:
+2     def myPow(self, x: float, n: int) -> float:
+3 
+4         """"""
+5         binary exponentiation
+6 
+7         x^n = (x^2)^(n//2)
+8         so we can take advantage of this to make it faster than just keep multiplying by x
+9 
+10         while n != 0
+11             if n is odd, multiply result by x and reduce n by 1
+12             if n is even, square x and reduce n by a factor of 2
+13 
+14         why do we square x, because x^n = (x^2)^(n//2)
+15         and we will eventually get to a situation where n == 1 so we will multiply the
+16         res by the value of x
+17 
+18         if n < 0
+19             set n = -1*n
+20             x = 1/
+21         Can do iteratively or recusively. Will probably do it iteratively
+22         """"""
+23 
+24         res = 1
+25         while n != 0:
+26 
+27             if n < 0:
+28                 n = -1*n
+29                 x = 1/x
+30 
+31             if n % 2 == 1:
+32                 res *= x
+33                 n -= 1
+34             else:
+35                 # binary exponentiation
+36                 x = x**2
+37                 # divide n by 2 since we are using x^n = (x^2)^(n//2)
+38                 n = n//2
+39 
+40         return res
+
+        <input_code>
+        ","--------------------
+Line number: 2
+Object name: myPow
+
+Docstring:
+
+Calculates x raised to the power of n efficiently using binary exponentiation.  Binary exponentiation is an algorithm that computes x^n by repeatedly squaring x and reducing n. This approach significantly improves efficiency compared to simple iterative multiplication, especially for large values of n.
+
+Args:
+    x (float): The base number.
+    n (int): The exponent.
+
+Returns:
+    float: x raised to the power of n.
+","The docstring accurately describes binary exponentiation and its efficiency benefits. It correctly specifies args and returns. However, it could mention handling of negative exponents for completeness.",True,True,True,1,1,1,3.1965718269348145,2849,118,pow.py
+5,../code_database/testing/leetcode/next_permutation.py,leetcode,"
+        <input_code>
+        1 class Solution:
+2     def nextPermutation(self, nums: List[int]) -> None:
+3 
+4         def swap(nums,p1,p2):
+5             nums[p1], nums[p2] = nums[p2], nums[p1]
+6 
+7         def reverse(nums,start):
+8 
+9             p0 = len(nums) - 1
+10             p1 = start
+11             while p0 > p1:
+12                 swap(nums,p0,p1)
+13                 p0 -= 1
+14                 p1 += 1
+15 
+16         p1 = len(nums) - 2
+17         # count backwards until we fid that nums[p1] < nums[p1+1]
+18         #[5,4,3,2,1] -> decreasing order so no next permutation, just sort
+19         # first we count back until we fnd an element thats smaller than p+1
+20         # then we count back again until we find the first element thats larger than the above
+21         # then we swap them
+22         # then we reverse the remainder of the array
+23         #[1,5,8,4,7,6,5,3,1] -> [1,5,8,5,7,6,4,3,1] -> [1,5,8,5,1,3,4,6,7]
+24 
+25         while p1 >= 0 and (nums[p1] >= nums[p1+1]):
+26             p1 -= 1
+27 
+28         if p1 >= 0:
+29             p2 = len(nums) - 1
+30             # count backwards util we find nums[p2] > nums[p1]
+31             while nums[p2] <= nums[p1]:
+32                 p2 -= 1
+33             swap(nums,p1,p2)
+34 
+35         reverse(nums,p1+1)
+
+        <input_code>
+        ","--------------------
+Line number: 4
+Object name: swap
+
+Docstring:
+
+Swaps two elements in a list.
+
+Args:
+    nums (list): The list of numbers.
+    p1 (int): The index of the first element.
+    p2 (int): The index of the second element.
+
+Returns:
+    None: This function modifies the list in-place.
+--------------------
+Line number: 7
+Object name: reverse
+
+Docstring:
+
+Reverses a portion of a list.
+
+Args:
+    nums (list): The list of numbers.
+    start (int): The starting index of the portion to reverse.
+
+Returns:
+    None: This function modifies the list in-place.
+--------------------
+Line number: 2
+Object name: nextPermutation
+
+Docstring:
+
+Finds the lexicographically next greater permutation of a list of numbers.
+
+Args:
+    nums (List[int]): A list of integers.
+
+Returns:
+    None: This function modifies the input list in-place.
+","The docstrings are accurate, clear and concise. They correctly document the helper functions and main algorithm. While the nextPermutation docstring could mention the algorithm steps, it's not strictly necessary since the code comments explain the logic.",True,False,True,1,1,1,3.503561019897461,3056,130,next_permutation.py
+6,../code_database/testing/leetcode/timelimit.js,leetcode,"
+        <input_code>
+        1 var timeLimit = function(fn, t) {
+2   return async function(...args) {
+3     return new Promise((resolve, reject) => {
+4       setTimeout(() => {
+5         reject(""Time Limit Exceeded"");
+6       }, t);
+7       fn(...args).then(resolve).catch(reject);
+8     })
+9   }
+10 };
+
+        <input_code>
+        ",No docstrings,"This is JavaScript code, not Python. Since it's not Python code, having no docstrings is the correct approach. The evaluation criteria are therefore all met.",True,True,True,1,1,1,2.661065101623535,2439,115,timelimit.js
+7,../code_database/testing/leetcode/trapping_rainwater.py,leetcode,"
+        <input_code>
+        1 class Solution:
+2     def trap(self, height: List[int]) -> int:
+3         max_left_arr = [0]*len(height)
+4         max_right_arr = [0]*len(height)
+5 
+6         max_left = 0
+7         for i in range(len(height)):
+8             max_left = max(height[i],max_left)
+9             max_left_arr[i] = max_left
+10 
+11         max_right = 0
+12         for i in range(len(height)-1,-1,-1):
+13             max_right = max(height[i],max_right)
+14             max_right_arr[i] = max_right
+15 
+16         # now we have to find the min from both sides
+17         sum_water = 0
+18         for i in range(len(height)):
+19             sum_water += max(min(max_left_arr[i],max_right_arr[i])-height[i],0)
+20 
+21         return sum_water
+
+        <input_code>
+        ","--------------------
+Line number: 2
+Object name: trap
+
+Docstring:
+
+Calculates the total amount of rainwater that can be trapped within a histogram represented by the input array `height`. It uses two arrays to store the maximum height to the left and right of each bar, then iterates through the array to calculate the trapped water for each bar. The function returns the total trapped water. 
+
+Args:
+    height (List[int]): A list of integers representing the height of each bar in the histogram.
+
+Returns:
+    int: The total amount of trapped rainwater.
+","The docstring is accurate but could be clearer by mentioning this is a classic ""trapping rain water"" problem and explaining the core idea that water trapped at each position depends on min(max_left, max_right). Coverage is complete.",True,False,True,1,1,0,3.078896999359131,2718,133,trapping_rainwater.py
+8,../code_database/testing/leetcode/max_avg_subtree.py,leetcode,"
+        <input_code>
+        1 # Definition for a binary tree node.
+2 class TreeNode(object):
+3     def __init__(self, val=0, left=None, right=None):
+4         self.val = val
+5         self.left = left
+6         self.right = right
+7 
+8 class Solution(object):
+9     def maximumAverageSubtree(self, root):
+10         def traverse(node):
+11 
+12             if not node:
+13                 return (0,0,0)
+14 
+15             left_count, left_sum , left_avg = traverse(node.left)
+16             right_count, right_sum , right_avg = traverse(node.right)
+17 
+18             total_count = float(left_count + right_count + 1)
+19             total_sum = float(left_sum + right_sum + node.val)
+20             max_avg = max(total_sum/total_count,max(left_avg,right_avg))
+21 
+22             return (total_count,total_sum,max_avg)
+23 
+24 
+25         res = traverse(root)
+26         return res[-1]
+27 
+
+        <input_code>
+        ","--------------------
+Line number: 2
+Object name: TreeNode
+
+Docstring:
+
+Represents a node in a binary tree.
+
+Args:
+    val (int, optional): The value of the node. Defaults to 0.
+    left (TreeNode, optional): The left child node. Defaults to None.
+    right (TreeNode, optional): The right child node. Defaults to None.
+--------------------
+Line number: 10
+Object name: traverse
+
+Docstring:
+
+Performs a depth-first traversal of the binary tree to calculate the maximum average of subtrees.
+
+Args:
+    node (TreeNode): The current node being visited.
+
+Returns:
+    tuple: A tuple containing the total count of nodes, the total sum of node values, and the maximum average of subtrees encountered so far.
+--------------------
+Line number: 9
+Object name: maximumAverageSubtree
+
+Docstring:
+
+Calculates the maximum average value of a subtree within a given binary tree.
+
+Args:
+    root (TreeNode): The root node of the binary tree.
+
+Returns:
+    float: The maximum average value among all subtrees.
+","The docstrings are accurate, clear and cover all necessary components. The TreeNode class docstring is appropriate for a data structure class. The traverse and maximumAverageSubtree functions are well documented with correct args/returns.",True,False,True,1,1,1,3.0642030239105225,2881,131,max_avg_subtree.py
+9,../code_database/testing/leetcode/high_five.py,leetcode,"
+        <input_code>
+        1 from collections import defaultdict
+2 import heapq
+3 
+4 class Solution(object):
+5     def highFive(self, items):
+6 
+7         H = defaultdict(list)
+8         for element in items:
+9             H[element[0]].append(-element[1])
+10 
+11         op = []
+12         for k,v in H.items():
+13             heapq.heapify(v)
+14             count = 0
+15             sum_max = 0
+16             while v and count<5:
+17                 max_val = -heapq.heappop(v)
+18                 sum_max += max_val
+19                 count += 1
+20             op.append([k,sum_max//count])
+21 
+22         return op
+
+        <input_code>
+        ","--------------------
+Line number: 5
+Object name: highFive
+
+Docstring:
+
+This function calculates the average of the top 5 scores for each student. It uses a defaultdict to store student IDs as keys and their scores as values. A min-heap is used to efficiently find the top 5 scores for each student. The function returns a list of lists, where each inner list contains a student ID and their average of top 5 scores.
+
+Args:
+    items (List[List[int]]): A list of lists, where each inner list contains a student ID and their score.
+
+Returns:
+    List[List[int]]: A list of lists, where each inner list contains a student ID and their average of top 5 scores.
+","The docstring accurately describes the algorithm, parameters and return values. It explains the key data structures used (defaultdict and heap) and provides clear input/output formats. No missing components.",True,False,True,1,1,1,2.9889121055603027,2700,120,high_five.py
+10,../code_database/testing/leetcode/unique_path.py,leetcode,"
+        <input_code>
+        1 from math import factorial
+2 class Solution:
+3     def uniquePaths(self, m: int, n: int) -> int:
+4 
+5         dp = [[1]*n for _ in range(m)]
+6 
+7         for i in range(1,m):
+8             for j in range(1,n):
+9                 # we could reach this from the i, j-1 or the i-1, j cell since we are
+10                 # advancing in that direction
+11                 dp[i][j] = dp[i][j-1] + dp[i-1][j]
+12 
+13         return dp[m-1][n-1]
+
+        <input_code>
+        ","--------------------
+Line number: 3
+Object name: uniquePaths
+
+Docstring:
+
+Finds the number of unique paths from the top-left to the bottom-right of an m x n grid.  The robot can only move down or right. This function uses dynamic programming to efficiently calculate the number of unique paths. 
+
+Args:
+    m (int): The number of rows in the grid.
+    n (int): The number of columns in the grid.
+
+Returns:
+    int: The total number of unique paths.
+","The docstring accurately describes the problem, solution approach (DP), and parameters. It's clear and covers all necessary components. The Solution class doesn't need a docstring.",True,True,True,1,1,1,2.711669921875,2614,118,unique_path.py
+11,../code_database/testing/leetcode/sparse_multiply.py,leetcode,"
+        <input_code>
+        1 from collections import defaultdict
+2 class Solution:
+3     def multiply(self, mat1: List[List[int]], mat2: List[List[int]]) -> List[List[int]]:
+4 
+5         """"""""
+6         convert sparse matrices to hash tables
+7         matrix multiplication: C[i,j] = SUM(A[i,k]*B[k,j])
+8         """"""
+9 
+10         def convert_to_lists(mat):
+11 
+12             ln, lm = len(mat), len(mat[0])
+13             compressed_matrix = [[] for _ in range(ln)]
+14             for i in range(ln):
+15                 for j in range(lm):
+16                     if mat[i][j] != 0:
+17                         # row i, stores matrix at i,j at col j
+18                         # this will be useful because we will want to index into this array
+19                         # at col vals
+20                         compressed_matrix[i].append([mat[i][j],j])
+21 
+22             return compressed_matrix
+23 
+24         m1 = convert_to_lists(mat1)
+25         m2 = convert_to_lists(mat2)
+26 
+27         m3 = [[0]*len(mat2[0]) for _ in range(len(mat1))]
+28         ln = len(m3)
+29 
+30         # iterate over all rows
+31         for m1_row in range(ln):
+32 
+33             # for all non zero elements of the cols of that row
+34             for element1, m1_col in m1[m1_row]:
+35                 # for all non zero elements of mat2 where row is equal to the col of current element in mat1
+36                 for element2, m2_col in m2[m1_col]:
+37                     m3[m1_row][m2_col] += element1 * element2
+38 
+39         return m3
+
+        <input_code>
+        ","--------------------
+Line number: 10
+Object name: convert_to_lists
+
+Docstring:
+
+Converts a given matrix into a compressed sparse row (CSR) representation. This function iterates through the matrix and stores only the non-zero elements along with their column indices. This compressed representation is more efficient for sparse matrices.
+
+Args:
+    mat (List[List[int]]): The input matrix.
+
+Returns:
+    List[List[List[int]]]: A list of lists, where each inner list represents a row and contains non-zero elements and their column indices as [value, column_index].
+--------------------
+Line number: 3
+Object name: multiply
+
+Docstring:
+
+Performs matrix multiplication of two sparse matrices using a compressed sparse row (CSR) representation. The function converts the input matrices into CSR format, then iterates through the non-zero elements to compute the result. This approach is efficient for sparse matrices.
+
+Args:
+    mat1 (List[List[int]]): The first sparse matrix.
+    mat2 (List[List[int]]): The second sparse matrix.
+
+Returns:
+    List[List[int]]: The resulting matrix after multiplication.
+",The docstrings are accurate in describing the sparse matrix multiplication algorithm and data structures. They provide clear explanations and cover all necessary functions with proper args/returns.,True,True,True,1,1,1,3.294316053390503,3077,115,sparse_multiply.py
+12,../code_database/testing/leetcode/threesum.py,leetcode,"
+        <input_code>
+        1 class Solution:
+2     def threeSum(self, nums: List[int]) -> List[List[int]]:
+3 
+4         """"""
+5         For each value, we can do a check to see which of the subsequent
+6         values add up to 0
+7 
+8         if we sort the array, we can skip any duplicates
+9         """"""
+10 
+11         res = []
+12         nums.sort()
+13 
+14         for i in range(len(nums)):
+15 
+16             candidate = nums[i]
+17             if i > 0 and candidate == nums[i-1]:
+18                 continue
+19 
+20             # pointers for left and right
+21             left = i + 1
+22             right = len(nums) -1
+23             while left < right:
+24 
+25                 candidate_sum = candidate + nums[left] + nums[right]
+26                 if candidate_sum == 0:
+27                     res.append([candidate, nums[left], nums[right]])
+28                     # advance the left pointer
+29                     left += 1
+30                     # avoid duplicates and keep going left if we find one
+31                     while (nums[left] == nums[left-1]) and (left < right):
+32                         left += 1
+33 
+34                 # we need to move right
+35                 elif candidate_sum < 0:
+36                     left += 1
+37                 # if we need to move left
+38                 else:
+39                     right -= 1
+40 
+41         return res
+
+        <input_code>
+        ","--------------------
+Line number: 2
+Object name: threeSum
+
+Docstring:
+
+Finds all unique triplets in the input list `nums` that sum to zero.
+
+This function sorts the input list, then iterates through it using two pointers to find triplets that sum to zero. It efficiently handles duplicate values to ensure only unique triplets are included in the result.
+
+Args:
+    nums (List[int]): A list of integers.
+
+Returns:
+    List[List[int]]: A list of lists, where each inner list represents a unique triplet that sums to zero.
+",The docstring accurately describes the two-pointer approach and handling of duplicates. It correctly specifies args and returns. The explanation is clear and concise.,True,True,True,1,1,1,3.1865248680114746,2843,114,threesum.py
+13,../code_database/testing/leetcode/armstrong_number.py,leetcode,"
+        <input_code>
+        1 class Solution(object):
+2     def isArmstrong(self, n):
+3 
+4         ndigits = [int(c) for c in str(n)]
+5         k = len(ndigits)
+6         n_sum = sum([float(d)**k for d in str(n)])
+7         return n_sum == n
+8 
+
+        <input_code>
+        ","--------------------
+Line number: 2
+Object name: isArmstrong
+
+Docstring:
+
+Checks if a given number is an Armstrong number. An Armstrong number is a number that is equal to the sum of its own digits raised to the power of the number of digits.  The function converts the number to a list of digits, calculates the sum of each digit raised to the power of the number of digits, and compares it to the original number.
+
+Args:
+    n (int): The number to check.
+
+Returns:
+    bool: True if the number is an Armstrong number, False otherwise.
+","The docstring accurately describes Armstrong numbers and the implementation. It correctly specifies args and returns, and provides clear explanation of both the concept and the approach.",True,False,True,1,1,1,2.467571258544922,2554,113,armstrong_number.py
+14,../code_database/testing/leetcode/twosum.py,leetcode,"
+        <input_code>
+        1 from collections import defaultdict
+2 
+3 class Solution:
+4     def twoSum(self, nums, target):
+5 
+6         H = defaultdict(int)
+7         for i, n in enumerate(nums):
+8             H[target-n] = i
+9 
+10         for i, n in enumerate(nums):
+11             if n in H and H[n]!=i:
+12                 return [i, H[n]]
+
+        <input_code>
+        ","--------------------
+Line number: 4
+Object name: twoSum
+
+Docstring:
+
+Finds two numbers within a list that add up to a specified target value.
+
+This function iterates through the input list `nums` and uses a hash map `H` to efficiently find the indices of two numbers that sum up to the `target`. It returns a list containing the indices of these two numbers.
+
+Args:
+    nums (List[int]): The input list of numbers.
+    target (int): The target sum.
+
+Returns:
+    List[int]: A list containing the indices of the two numbers that add up to the target. Returns an empty list if no such pair is found.
+","The docstring has a few issues: 1) It incorrectly states it returns an empty list when no solution found - the code has no such behavior. 2) The algorithm description is incomplete, missing the two-pass approach.",True,True,True,0,1,1,3.7786052227020264,2595,131,twosum.py
+15,../code_database/testing/leetcode/largest_unique.py,leetcode,"
+        <input_code>
+        1 from collections import defaultdict
+2 class Solution(object):
+3     def largestUniqueNumber(self, nums):
+4 
+5         largest_non_repeat = -float('inf')
+6         H = defaultdict(int)
+7 
+8         # count the number of times each element appears
+9         for element in nums:
+10             H[element] += 1
+11 
+12         # pass again and consider only the elements that occured once
+13         for k,v in H.items():
+14             if (v == 1) and (k > largest_non_repeat):
+15                 largest_non_repeat = k
+16 
+17         if largest_non_repeat == -float('inf'):
+18             return -1
+19         else:
+20             return largest_non_repeat
+
+        <input_code>
+        ","--------------------
+Line number: 3
+Object name: largestUniqueNumber
+
+Docstring:
+
+Finds the largest unique number in a given list of numbers.
+
+This function iterates through the input list `nums`, counting the occurrences of each number using a defaultdict. It then iterates through the counts, identifying the largest number that appears only once. If no unique numbers are found, it returns -1.
+
+Args:
+    nums (List[int]): A list of integers.
+
+Returns:
+    int: The largest unique number in the list, or -1 if no unique numbers exist.
+","The docstring is accurate, clear and provides complete coverage. It correctly explains the two-pass algorithm, properly specifies input/output types, and includes the edge case return value of -1.",True,True,True,1,1,1,3.8890628814697266,2660,122,largest_unique.py
+16,../code_database/testing/leetcode/roman_to_integer.py,leetcode,"
+        <input_code>
+        1 from collections import deque
+2 
+3 class Solution:
+4     def romanToInt(self, s):
+5         """"""
+6         :type s: str
+7         :rtype: int
+8         """"""
+9 
+10         Q = deque([char for char in s])
+11         to_sum =[]
+12 
+13         lookup = {
+14             ""I"":1,
+15             ""V"":5,
+16             ""IV"":4,
+17             ""X"":10,
+18             ""IX"":9,
+19             ""L"":50,
+20             ""C"":100,
+21             ""XL"":40,
+22             ""XC"":90,
+23             ""D"":500,
+24             ""CD"":400,
+25             ""CM"":900,
+26             ""M"":1000
+27         }
+28 
+29         while Q:
+30 
+31             latest = Q.popleft()
+32             if Q:
+33                 head_of_Q = Q[0]
+34 
+35                 if (latest == ""I"" and head_of_Q in [""V"",""X""]) or (latest == ""X"" and head_of_Q in [""L"",""C""]) or (latest == ""C"" and head_of_Q in [""D"",""M""]):
+36 
+37                     latest_2 = Q.popleft()
+38                     latest = latest+latest_2
+39 
+40             to_sum.append(lookup[latest])
+41 
+42 
+43         return sum(to_sum)
+
+        <input_code>
+        ","--------------------
+Line number: 4
+Object name: romanToInt
+
+Docstring:
+
+Converts a Roman numeral string to an integer.  The function iterates through the Roman numeral string, handling subtractive cases (like IV, IX) and adding the values of individual Roman numerals to obtain the final integer representation. 
+
+Args:
+    s (str): The Roman numeral string to convert.
+
+Returns:
+    int: The integer representation of the Roman numeral string.
+",The docstring accurately describes the function's purpose and handles subtractive cases. The args and returns are correctly specified. No other docstrings needed since this is a Solution class.,True,True,True,1,1,1,3.386885166168213,2811,119,roman_to_integer.py
+17,../code_database/testing/leetcode/remove_elememt.py,leetcode,"
+        <input_code>
+        1 class Solution(object):
+2     def removeElement(self, nums, val):
+3         """"""
+4         :type nums: List[int]
+5         :type val: int
+6         :rtype: int
+7         """"""
+8 
+9         ln = len(nums)
+10 
+11         new_length = ln
+12         i = 0
+13 
+14         while i < new_length:
+15             if nums[i] == val:
+16                 # Don't advance i if this is the case!
+17                 nums[i] = nums[new_length-1]
+18                 new_length -= 1
+19             else:
+20                 i += 1
+21 
+22         return new_length
+23 
+24 
+25 
+
+        <input_code>
+        ","--------------------
+Line number: 2
+Object name: removeElement
+
+Docstring:
+
+Removes all occurrences of a specified value from a list in-place. This function iterates through the list and replaces elements equal to the target value with the last element of the remaining unprocessed portion of the list.  The function then returns the new length of the list after removing the specified value. 
+
+Args:
+    nums (List[int]): The input list of integers.
+    val (int): The value to be removed from the list.
+
+Returns:
+    int: The new length of the list after removing all occurrences of `val`.
+","The docstring accurately describes the in-place removal algorithm, correctly specifies args and returns, and provides sufficient clarity for understanding the function's purpose and behavior.",True,False,True,1,1,1,2.757642984390259,2663,114,remove_elememt.py
+18,../code_database/testing/leetcode/integer_to_roman.py,leetcode,"
+        <input_code>
+        1 class Solution(object):
+2     def intToRoman(self, num):
+3 
+4         mapping = {
+5             1000:""M"",
+6             900:""CM"",
+7             500:""D"",
+8             400:""CD"",
+9             100:""C"",
+10             90:""XC"",
+11             50:""L"",
+12             40:""XL"",
+13             10:""X"",
+14             9:""IX"",
+15             5:""V"",
+16             4:""IV"",
+17             1:""I""
+18         }
+19 
+20         test_order = [1000,900,500,400,100,90,50,40,10,9,5,4,1]
+21 
+22         output=""""
+23         for element in test_order:
+24 
+25             # the number of times the element fits into the number
+26             ntimes = num // element
+27             #print(num, ntimes, element)
+28             # the remainder
+29             # the remainder
+30             num = num % element
+31             output += str(ntimes*mapping[element])
+32 
+33         return output
+34 
+35 
+
+        <input_code>
+        ","--------------------
+Line number: 2
+Object name: intToRoman
+
+Docstring:
+
+Converts an integer to its Roman numeral representation.
+
+This function iterates through a predefined list of Roman numeral values and their corresponding integers.
+For each value, it determines how many times it fits into the input number and appends the appropriate Roman numeral characters to the output string.
+The process continues until the input number is reduced to zero.
+
+Args:
+    num (int): The integer to be converted.
+
+Returns:
+    str: The Roman numeral representation of the input integer.
+","The docstring accurately describes the algorithm, includes correct args/returns, and provides sufficient detail for understanding. The explanation is clear and well-structured.",True,False,True,1,1,1,3.8904480934143066,2736,112,integer_to_roman.py
+19,../code_database/testing/leetcode/make_parenthesis.py,leetcode,"
+        <input_code>
+        1 class Solution:
+2     def generateParenthesis(self, n: int) -> List[str]:
+3         stack = []
+4         res = []
+5 
+6         def backtrack(openN, closeN):
+7 
+8             if openN == closeN == n:
+9                 res.append("""".join(stack))
+10                 return
+11 
+12             if openN < n:
+13                 stack.append(""("")
+14                 # continue
+15                 backtrack(openN + 1, closeN)
+16                 stack.pop()
+17 
+18             # if we have more open than close, we can add a new close
+19             if closeN < openN:
+20                 stack.append("")"")
+21                 backtrack(openN, closeN+1)
+22                 stack.pop()
+23 
+24         backtrack(0,0)
+25         return res
+
+        <input_code>
+        ","--------------------
+Line number: 2
+Object name: generateParenthesis
+
+Docstring:
+
+Generates all possible valid combinations of n pairs of parentheses. It uses backtracking to explore all possible combinations and adds valid combinations to the result list.  The function ensures that at any point, the number of closing parentheses does not exceed the number of opening parentheses.
+
+Args:
+    n (int): The number of pairs of parentheses.
+
+Returns:
+    List[str]: A list of strings representing all valid combinations of parentheses.
+--------------------
+Line number: 6
+Object name: backtrack
+
+Docstring:
+
+A recursive helper function that explores all possible combinations of parentheses using backtracking. It adds valid combinations to the result list and ensures that the number of closing parentheses never exceeds the number of opening parentheses.
+
+Args:
+    openN (int): The number of opening parentheses used so far.
+    closeN (int): The number of closing parentheses used so far.
+
+Returns:
+    None
+","The docstrings are accurate, clear and cover all necessary functions. The Solution class doesn't need a docstring. The docstrings explain the backtracking approach and constraints well.",True,True,True,1,1,1,3.0572237968444824,2794,120,make_parenthesis.py
+20,../code_database/testing/leetcode/roman_to_int.c,leetcode,"
+        <input_code>
+        1 int romanToInt(char *s) {
+2     int values[256];
+3     values['I'] = 1;
+4     values['V'] = 5;
+5     values['X'] = 10;
+6     values['L'] = 50;
+7     values['C'] = 100;
+8     values['D'] = 500;
+9     values['M'] = 1000;
+10 
+11     int sum = 0;
+12     int i = 0;
+13     while (i < strlen(s)) {
+14         char currentSymbol = s[i];
+15         int currentValue = values[currentSymbol];
+16         int nextValue = 0;
+17         if (i + 1 < strlen(s)) {
+18             char nextSymbol = s[i + 1];
+19             nextValue = values[nextSymbol];
+20         }
+21         if (currentValue < nextValue) {
+22             sum += (nextValue - currentValue);
+23             i += 2;
+24         } else {
+25             sum += currentValue;
+26             i += 1;
+27         }
+28     }
+29     return sum;
+30 }
+
+        <input_code>
+        ",No docstrings,"This is C code, not Python. For non-Python code, having no docstrings is the correct approach since Python docstring conventions don't apply.",True,True,True,1,1,1,3.3843610286712646,2637,114,roman_to_int.c
+21,../code_database/testing/leetcode/dfs_count_components.py,leetcode,"
+        <input_code>
+        1 from collections import defaultdict, deque
+2 
+3 class Solution(object):
+4     def countComponents(self, n, edges):
+5         """"""
+6         :type n: int
+7         :type edges: List[List[int]]
+8         :rtype: int
+9         """"""
+10 
+11         self.H = defaultdict(list)
+12         self.seen = set()
+13 
+14         for edge in edges:
+15             self.H[edge[0]].append(edge[1])
+16             self.H[edge[1]].append(edge[0])
+17 
+18         connected_components = 0
+19 
+20         def dfs(node):
+21 
+22             self.seen.add(node)
+23             for connected in self.H[node]:
+24                 if connected not in self.seen:
+25                     dfs(connected)
+26 
+27 
+28         for node in range(n):
+29             if node not in self.seen:
+30                 dfs(node)
+31                 connected_components += 1
+32 
+33         return connected_components
+
+        <input_code>
+        ","--------------------
+Line number: 4
+Object name: countComponents
+
+Docstring:
+
+Counts the number of connected components in an undirected graph.  The graph is represented by the number of nodes 'n' and a list of edges. It uses Depth First Search (DFS) to traverse the graph and count the connected components. 
+
+Args:
+    n (int): The number of nodes in the graph.
+    edges (List[List[int]]): A list of edges, where each edge is represented as a list of two integers representing the nodes it connects.
+
+Returns:
+    int: The number of connected components in the graph.
+--------------------
+Line number: 20
+Object name: dfs
+
+Docstring:
+
+Performs Depth First Search (DFS) starting from a given node to mark all reachable nodes as visited. It uses a recursive approach to explore the graph. 
+
+Args:
+    node (int): The starting node for the DFS traversal.
+
+Returns:
+    None
+","The docstrings are accurate, clear and cover all necessary functions. The Solution class doesn't need a docstring, and both countComponents and dfs functions have well-structured docstrings that explain their purpose and parameters correctly.",True,True,True,1,1,1,9.727083921432495,2830,129,dfs_count_components.py
+22,../code_database/testing/leetcode/composition.js,leetcode,"
+        <input_code>
+        1 var compose = function (functions) {
+2   return function (x) {
+3     if (functions.length === 0) return x;
+4     let input = x;
+5 
+6     for (let i = functions.length - 1; i >= 0; i--) {
+7       const currFunc = functions[i];
+8 
+9       input = currFunc(input);
+10     }
+11 
+12     return input;
+13   };
+14 };
+
+        <input_code>
+        ",No docstrings,"Since this is JavaScript code (using var, let, const keywords) and not Python, having no docstrings is the correct approach. No Python docstrings should be present.",True,True,True,1,1,1,4.4057769775390625,2466,119,composition.js
+23,../code_database/testing/leetcode/paint_fence.py,leetcode,"
+        <input_code>
+        1 class Solution:
+2     def numWays(self, n: int, k: int) -> int:
+3 
+4         if n == 0:
+5             return 0
+6 
+7         dp = [0]*(n+1)
+8 
+9         if len(dp) > 1:
+10             dp[1] = k
+11         if len(dp) > 2:
+12             dp[2] = k**2
+13 
+14         if len(dp) <= 3:
+15             return dp[-1]
+16 
+17         for i in range(3,len(dp)):
+18             # value at i = sum of possibilies leading up to i
+19             dp[i] = (k-1)*dp[i-1] + (k-1)*dp[i-2]
+20 
+21         return dp[-1]
+
+        <input_code>
+        ","--------------------
+Line number: 2
+Object name: numWays
+
+Docstring:
+
+This function uses dynamic programming to count the number of ways to paint n fences with k colors such that no more than two adjacent fences have the same color. The base cases are handled for n=0, n=1, and n=2. For n>2, the recurrence relation dp[i] = (k-1)*dp[i-1] + (k-1)*dp[i-2] is used, where dp[i] represents the number of ways to paint i fences. 
+
+Args:
+    n (int): The number of fences.
+    k (int): The number of colors.
+
+Returns:
+    int: The number of ways to paint the fences.
+","The docstring accurately explains the DP approach, base cases, and recurrence relation. It correctly specifies args and returns. The explanation is clear and covers all necessary aspects of the function.",True,False,True,1,1,1,4.708125114440918,2717,121,paint_fence.py
+24,../code_database/testing/leetcode/jump_game_2.py,leetcode,"
+        <input_code>
+        1 from collections import defaultdict
+2 class Solution:
+3     def jump(self, nums: List[int]) -> int:
+4         total_jumps = 0
+5         current_far, current_end = 0, 0
+6 
+7         for i in range(len(nums)-1):
+8 
+9             # the farthest we can jump from the current spot
+10             # or the ith spot
+11             current_far = max(current_far, i + nums[i])
+12 
+13             # if we reached the limit of where we can jump from the
+14             # current spot, then we make another jump and update
+15             # current end to the current far (i.e. jump as far as possible)
+16             if i == current_end:
+17                 # add another jump
+18                 total_jumps += 1
+19                 # extend the limit
+20                 current_end = current_far
+21 
+22             #print(current_end, current_far, total_jumps)
+23 
+24         return total_jumps
+
+        <input_code>
+        ","--------------------
+Line number: 3
+Object name: jump
+
+Docstring:
+
+Finds the minimum number of jumps required to reach the end of the array `nums`. This function implements a greedy approach, iterating through the array and updating the farthest reachable index at each step.  It counts the number of jumps needed to reach the farthest index. 
+
+Args:
+    nums (List[int]): A list of integers representing the maximum jump length from each index.
+
+Returns:
+    int: The minimum number of jumps required to reach the end of the array.
+",The docstring is accurate and clear but could mention that this is a solution to the Jump Game II problem and that it assumes a valid solution exists (since there's no error handling).,True,True,True,1,1,1,4.773617267608643,2722,120,jump_game_2.py
+25,../code_database/testing/leetcode/missing_number.py,leetcode,"
+        <input_code>
+        1 class Solution(object):
+2     def missingNumber(self, arr):
+3 
+4         expected_difference = (arr[-1]-arr[0])//len(arr)
+5 
+6         left = 0
+7         right = len(arr)-2
+8 
+9         while left <= right:
+10 
+11             mid = (left+right)//2
+12 
+13             # if we have reached the solution
+14             if (arr[mid] + expected_difference) != arr[mid+1]:
+15                 return arr[mid] + expected_difference
+16 
+17             # if everything is good to the left, move right
+18             if arr[mid] == arr[0] + mid*expected_difference:
+19                 left = mid + 1
+20             # if everything is good to the right, move left
+21             else:
+22                 right = mid - 1
+23 
+24         return arr[mid] + expected_difference
+25 
+26 
+
+        <input_code>
+        ","--------------------
+Line number: 2
+Object name: missingNumber
+
+Docstring:
+
+Finds the missing number in an arithmetic progression. This function efficiently locates a missing number within a nearly arithmetic sequence using binary search. It calculates the expected difference between consecutive numbers and then uses binary search to find the index where this difference is violated, indicating the missing number.
+
+Args:
+    arr (List[int]): A list of integers representing a nearly arithmetic progression.
+
+Returns:
+    int: The missing number in the arithmetic progression.
+",The docstring accurately describes the binary search approach and arithmetic progression context. It correctly specifies args and returns. The explanation is clear and complete.,True,True,True,1,1,1,3.3137259483337402,2685,111,missing_number.py
+26,../code_database/testing/leetcode/paint_house.py,leetcode,"
+        <input_code>
+        1 class Solution:
+2     def minCost(self, costs: List[List[int]]) -> int:
+3 
+4         dp = costs
+5         N = len(dp)
+6 
+7         # go from 1 to N
+8         for i in range(1, N):
+9             dp[i][0] += min(dp[i-1][1], dp[i-1][2])
+10             dp[i][2] += min(dp[i-1][1], dp[i-1][0])
+11             dp[i][1] += min(dp[i-1][2], dp[i-1][0])
+12 
+13         return min(dp[-1])
+
+        <input_code>
+        ","--------------------
+Line number: 2
+Object name: minCost
+
+Docstring:
+
+Finds the minimum cost to paint a house with n houses and k colors, using dynamic programming. The function iterates through the houses, calculating the minimum cost to paint each house with each color by considering the costs of painting adjacent houses with different colors. It returns the minimum cost among all colors for the last house.
+
+Args:
+    costs (List[List[int]]): A list of lists representing the costs of painting each house with each color.
+
+Returns:
+    int: The minimum cost to paint all houses.
+",The docstring is accurate but could be clearer about the specific problem constraints (3 colors) and the fact that adjacent houses can't share colors. The explanation of the DP approach is good.,True,False,True,1,1,0,4.648838996887207,2635,123,paint_house.py
+27,../code_database/testing/leetcode/first_unique_occur.py,leetcode,"
+        <input_code>
+        1 from collections import defaultdict
+2 
+3 class FirstUnique(object):
+4 
+5     def __init__(self, nums):
+6         """"""
+7         :type nums: List[int]
+8         """"""
+9 
+10         self.Q = nums
+11         self.first_unique_index = 0
+12         self.S = self.determineNOccur(self.Q)
+13         self.lenQ = len(self.Q)
+14         self.first_unique_index = self.determineFirstUnique()
+15 
+16     def determineNOccur(self,Q):
+17 
+18         H = defaultdict(int)
+19         for v in self.Q:
+20             H[v] += 1
+21 
+22         return H
+23 
+24     def determineFirstUnique(self):
+25 
+26         index = self.first_unique_index
+27 
+28         while (index < self.lenQ) and (self.S[self.Q[index]]) > 1:
+29             index += 1
+30 
+31         return index
+32 
+33     def showFirstUnique(self):
+34         """"""
+35         :rtype: int
+36         """"""
+37 
+38         self.first_unique_index = self.determineFirstUnique()
+39 
+40         if self.first_unique_index == self.lenQ:
+41             return -1
+42         else:
+43             return self.Q[self.first_unique_index]
+44 
+45 
+46     def add(self, value):
+47         """"""
+48         :type value: int
+49         :rtype: None
+50         """"""
+51 
+52         self.Q.append(value)
+53         self.S[value] += 1
+54         self.lenQ += 1
+
+        <input_code>
+        ","--------------------
+Line number: 5
+Object name: __init__
+
+Docstring:
+
+Initializes the FirstUnique object with a list of numbers.
+
+Args:
+    nums (List[int]): A list of integers.
+
+Returns:
+    None
+--------------------
+Line number: 16
+Object name: determineNOccur
+
+Docstring:
+
+Counts the occurrences of each number in the input list.
+
+Args:
+    Q (List[int]): The input list of numbers.
+
+Returns:
+    defaultdict(int): A dictionary where keys are numbers and values are their counts.
+--------------------
+Line number: 24
+Object name: determineFirstUnique
+
+Docstring:
+
+Finds the index of the first unique number in the list.
+
+Args:
+    None
+
+Returns:
+    int: The index of the first unique number, or len(Q) if no unique number is found.
+--------------------
+Line number: 33
+Object name: showFirstUnique
+
+Docstring:
+
+Returns the value of the first unique number in the list, or -1 if there is no unique number.
+
+Args:
+    None
+
+Returns:
+    int: The value of the first unique number, or -1 if none exists.
+--------------------
+Line number: 46
+Object name: add
+
+Docstring:
+
+Adds a new number to the list and updates the counts.
+
+Args:
+    value (int): The number to be added.
+
+Returns:
+    None
+","The docstrings are accurate, clear and cover all functions. They explain the purpose of each method, correctly specify args/returns, and provide enough detail for understanding the code's functionality.",True,False,True,1,1,1,3.5231170654296875,3115,120,first_unique_occur.py
+28,../code_database/testing/leetcode/max_ones_v2.py,leetcode,"
+        <input_code>
+        1 class Solution:
+2     def findMaxConsecutiveOnes(self, nums: List[int]) -> int:
+3 
+4         max_len = 0
+5         p1, p2 = 0, 0
+6         ln = len(nums)
+7         count_zero = 0
+8         while (p2 < ln) and (p1 <= p2):
+9 
+10             if nums[p2] == 0:
+11                 count_zero += 1
+12 
+13             while count_zero == 2:
+14                 if nums[p1] == 0:
+15                     count_zero -= 1
+16                 p1 += 1
+17 
+18             max_len = max(max_len,p2-p1+1)
+19             p2 += 1
+20 
+21         return max_len
+
+        <input_code>
+        ","--------------------
+Line number: 2
+Object name: findMaxConsecutiveOnes
+
+Docstring:
+
+Finds the length of the longest consecutive sequence of 1s in a binary array containing at most two zeros.  The function uses a sliding window approach with two pointers to track the current window and count of zeros. It iterates through the array, expanding the window and adjusting the start pointer to maintain at most two zeros within the window. The maximum length of the consecutive ones sequence is then returned.
+
+Args:
+    nums (List[int]): A binary array (containing only 0s and 1s).
+
+Returns:
+    int: The length of the longest consecutive sequence of 1s with at most two zeros.
+","The docstring accurately describes the sliding window algorithm, its purpose, and implementation details. It correctly specifies input/output types and constraints. The explanation is clear and complete.",True,False,True,1,1,1,3.2920708656311035,2706,117,max_ones_v2.py
+29,../code_database/testing/leetcode/longest_substring_k.py,leetcode,"
+        <input_code>
+        1 from collections import defaultdict
+2 
+3 class Solution:
+4     def lengthOfLongestSubstringKDistinct(self, s: str, k: int) -> int:
+5 
+6         H = defaultdict(int)
+7         ln = len(s)
+8         current_len = 0
+9         # this is the running sum of the values in the dict
+10         running_sum_len = 0
+11         l = 0
+12 
+13         for i in range(ln):
+14 
+15             candidate = s[i]
+16             H[candidate] += 1
+17             running_sum_len += 1
+18 
+19             while (len(H) > k):
+20                 # if too long, start to reduce
+21                 H[s[l]] -= 1
+22                 # if get to zero, remove
+23                 if H[s[l]] == 0:
+24                     del H[s[l]]
+25                 # subtract from running sum
+26                 running_sum_len -= 1
+27                 l += 1
+28 
+29             #print(H, running_sum_len)
+30             current_len = max(running_sum_len,current_len)
+31 
+32 
+33         return current_len
+
+        <input_code>
+        ","--------------------
+Line number: 4
+Object name: lengthOfLongestSubstringKDistinct
+
+Docstring:
+
+Finds the length of the longest substring with at most k distinct characters.  This function uses a sliding window approach with a hash map to track character frequencies. The window expands until more than k distinct characters are found, then it contracts from the left until the condition is met again. 
+
+Args:
+    s (str): The input string.
+    k (int): The maximum number of distinct characters allowed.
+
+Returns:
+    int: The length of the longest substring with at most k distinct characters.
+","The docstring accurately describes the sliding window algorithm, correctly specifies args and returns, and provides enough detail for understanding. The code has no other functions needing docstrings.",True,False,True,1,1,1,4.508258104324341,2785,118,longest_substring_k.py
+30,../code_database/testing/leetcode/one_edit_distance.py,leetcode,"
+        <input_code>
+        1 class Solution(object):
+2     def isOneEditDistance(self, s, t):
+3 
+4         len_t = len(t)
+5         len_s = len(s)
+6 
+7         if len_s > len_t:
+8             return self.isOneEditDistance(t,s)
+9 
+10         if len_t > len_s + 1:
+11             return False
+12 
+13         for i in range(len_s):
+14 
+15             # if the chars are not the same
+16             if s[i] != t[i]:
+17                 # if the strings are the same length
+18                 if len_s == len_t:
+19                     # check of everything beyond that is the same
+20                     return s[i+1:] == t[i+1:]
+21                 # if the strings are not the same length
+22                 else:
+23                     # check of everything after that char in t (the longer one) is the same
+24                     return s[i:] == t[i+1:]
+25 
+26         # if we're here, then the strings are only one edit away if t has one more char than s
+27         return len_s + 1 == len_t
+
+        <input_code>
+        ","--------------------
+Line number: 2
+Object name: isOneEditDistance
+
+Docstring:
+
+Checks if two strings, s and t, are at most one edit away from each other.
+
+An edit is defined as insertion, deletion, or substitution of a single character.
+The function handles cases where one string is longer than the other and efficiently compares substrings to determine if the edit distance is one or less.
+
+Args:
+    s (str): The first string.
+    t (str): The second string.
+
+Returns:
+    bool: True if the strings are at most one edit away, False otherwise.
+","The docstring accurately describes the function's purpose, parameters and return value. It explains what an ""edit"" means and handles all key aspects of the code's functionality.",True,True,True,1,1,1,2.9677939414978027,2772,116,one_edit_distance.py
+31,../code_database/testing/leetcode/rotated_array_search.py,leetcode,"
+        <input_code>
+        1 class Solution(object):
+2 
+3     def find_pivot_index(self, nums):
+4 
+5         ln = len(nums)
+6         left = 0
+7         right = ln - 1
+8 
+9         if nums[left] < nums[right]:
+10             # the array has not been pivoted
+11             return 0
+12 
+13         while left <= right:
+14 
+15             mid = (left+right)//2
+16             # we have found the pivot point
+17             if nums[mid] > nums[mid + 1]:
+18                 return mid + 1
+19             else:
+20                 # implies pivot is to the left of mid
+21                 # since otherwise mid > left
+22                 if nums[mid] < nums[left]:
+23                     right = mid - 1
+24                 #implies pivot is to the right of mid
+25                 else:
+26                     left = mid + 1
+27 
+28 
+29     def search(self, nums, target):
+30         """"""
+31         :type nums: List[int]
+32         :type target: int
+33         :rtype: int
+34         """"""
+35 
+36         # Approach
+37         # find the rotation index (the smallest element in the array)
+38         # binary search in the correct part of the sorted array
+39 
+40         def _bin_search(left,right):
+41 
+42             while left <= right:
+43 
+44                 mid = (left + right)//2
+45                 if nums[mid] == target:
+46                     return mid
+47                 elif nums[mid] > target:
+48                     # target lies in the left part
+49                     right = mid - 1
+50                 else:
+51                     # target lies in the right part
+52                     left = mid + 1
+53 
+54             return -1
+55 
+56         ln = len(nums)
+57         if ln == 1:
+58             return 0 if nums[0] == target else -1
+59 
+60         piv_index = self.find_pivot_index(nums)
+61 
+62         if nums[piv_index] == target:
+63             return piv_index
+64         elif piv_index == 0:
+65             # pivot is 0, search entire array
+66             return _bin_search(0,ln-1)
+67         elif nums[0] > target:
+68             # implies value is to the right of the pivot
+69             return _bin_search(piv_index,ln-1)
+70         else:
+71             # implies value is to the left of the pivot
+72             return _bin_search(0,piv_index)
+73 
+74 
+
+        <input_code>
+        ","--------------------
+Line number: 3
+Object name: find_pivot_index
+
+Docstring:
+
+Finds the index of the pivot element in a rotated sorted array using binary search.The function efficiently locates the pivot (the smallest element) in a rotated sorted array. It leverages binary search to achieve logarithmic time complexity. 
+
+Args:
+    nums (List[int]): The rotated sorted array of integers.
+
+Returns:
+    int: The index of the pivot element.
+--------------------
+Line number: 29
+Object name: search
+
+Docstring:
+
+Searches for a target value in a rotated sorted array using binary search.The function efficiently searches for a target value within a rotated sorted array. It first determines the pivot index and then performs binary search on the appropriate sorted subarray.
+
+Args:
+    nums (List[int]): The rotated sorted array of integers.
+    target (int): The target value to search for.
+
+Returns:
+    int: The index of the target value if found, otherwise -1.
+",The docstrings are accurate and clear but missing coverage for the inner _bin_search function which performs a key part of the algorithm and should be documented.,True,True,True,1,0,1,4.2981178760528564,3222,114,rotated_array_search.py
+32,../code_database/testing/leetcode/meeting_rooms.py,leetcode,"
+        <input_code>
+        1 class Solution(object):
+2     def canAttendMeetings(self, intervals):
+3 
+4         intervals.sort(key=lambda x:x[1])
+5 
+6         #print(intervals)
+7 
+8         last_meeting_end = 0
+9         for meeting in intervals:
+10             meeting_start = meeting[0]
+11             if meeting_start < last_meeting_end:
+12                 return False
+13             last_meeting_end = meeting[1]
+14 
+15         return True
+
+        <input_code>
+        ","--------------------
+Line number: 2
+Object name: canAttendMeetings
+
+Docstring:
+
+Determines if a person can attend all meetings given their time intervals.
+
+This function efficiently checks if a person can attend all meetings without any overlaps. It sorts the meetings by their end times and iteratively checks for conflicts.
+
+Args:
+    intervals (List[List[int]]): A list of meeting time intervals, where each interval is represented as a list [start, end].
+
+Returns:
+    bool: True if a person can attend all meetings, False otherwise.
+","The docstring accurately describes the function's purpose, arguments, and return value. The sorting by end time is mentioned, and the explanation is clear and complete.",True,True,True,1,1,1,3.637467861175537,2587,114,meeting_rooms.py
+33,../code_database/testing/leetcode/missing_number.java,leetcode,"
+        <input_code>
+        1 class Solution {
+2     public int missingNumber(int[] arr) {
+3         int n = arr.length;
+4 
+5         // Get the difference `difference`.
+6         int difference = (arr[arr.length - 1] - arr[0]) / n;
+7 
+8         // The expected element equals the starting element.
+9         int expected = arr[0];
+10 
+11         for (int val : arr) {
+12             // Return the expected value that doesn't match val.
+13             if (val != expected) return expected;
+14 
+15             // Next element will be expected element + `difference`.
+16             expected += difference;
+17         }
+18         return expected;
+19     }
+20 }
+
+        <input_code>
+        ",No docstrings,"This is Java code, not Python. For non-Python code, having no docstrings is the correct approach since Python docstring conventions don't apply.",True,True,True,1,1,1,3.222684144973755,2525,114,missing_number.java
