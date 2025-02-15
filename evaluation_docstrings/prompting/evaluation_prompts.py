@@ -44,7 +44,7 @@ class DocStringEvaluationPrompt:
     - CRITICAL: Only evaluate the docstrings, not other parts of the code. If there are logical flaws, missing import statements or missing comments it is not your job to judge those. Focus only on the docstring content.
     - If the input code is not Python, the correct answer is to have no docstrings present and you should return True for each of the criteria in that case.
 
-    <instructions>
+    </instructions>
 
     <examples>
     Here are some examples to guide your evaluation
@@ -188,5 +188,5 @@ class DocStringEvaluationPrompt:
     - The third docstring is missing args and returns when they are required (fails coverage)
 
     You should therefore return False for each of the three criteria
-    <examples>
+    </examples>
     """

@@ -68,7 +68,7 @@ class DocStringPrompt:
     	-  Return the docstring texts along with the names and line numbers of the object definitions where they will be inserted.
     	-  Ensure line numbers and object names are exactly as they appear in the code, as they will be used for insertion in a subsequent step.
         -  Structure your response as JSON in the desired format.
-    <instructions>
+    </instructions>
 
     <examples>
     Please see the following examples for reference:
@@ -109,5 +109,5 @@ Returns:
             }
         ]
     }
-    <examples>
+    </examples>
     """
